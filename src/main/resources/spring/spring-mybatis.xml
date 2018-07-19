@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <bean id="multipleDataSource" class="com.dcorepay.datasource.MultipleDataSource">
+        <property name="defaultTargetDataSource" ref="dataSource"/>
+        <property name="targetDataSources">
+            <map>
+                <entry key="dataSource" value-ref="dataSource"/>
+                <entry key="dataSource1" value-ref="dataSource1"/>
+            </map>
+        </property>
+    </bean>
+    <!-- ===================================== 自动生成SqlSessionFactory =========================================== -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <property name="dataSource" ref="multipleDataSource"/>
+        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
+    </bean>
+    <!-- ============================================== 映射dao接口 ================================================ -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <property name="basePackage" value="com.dcorepay.dao"/>
+    </bean>
+
+    <!-- ============================================== 事务管理 ================================================ -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="multipleDataSource" />
+    </bean>
+
+</beans>

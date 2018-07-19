@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dcorepay.dao.CibMchMapper">
+	<sql id="fields">
+		a.id AS "id",
+		a.mch_name AS "mchName",
+		a.parent_id AS "parent.id",
+		a.parent_ids as "parentIds",
+		a.abbr_name AS "abbrName",
+		'' as "bank.id",
+		'' as "bank.name",
+		a.pay_type as "payType",
+		a.ali_category as "aliCategory.id",
+		c2.category_name as "aliCategory.name",
+		a.ali_sub_mch_id as "aliSubMchId",
+		a.ali_pid as "aliPid",
+		a.ali_tg_id as "aliTgId",
+		a.contact,
+		a.mobile,
+		a.email,
+		a.website,
+		a.reg_addr AS "regAddr",
+		a.reg_pic AS "regPic",
+		a.legal_name AS "legalName",
+		a.card_type AS "cardType",
+		a.card_num AS "cardNum",
+		a.card_front AS "cardFront",
+		a.card_back AS "cardBack",
+		a.reg_pic_id AS "regPicId",
+		a.card_front_id AS "cardFrontId",
+		a.card_back_id AS "cardBackId",
+		a.org_code AS "orgCode",
+		a.org_pic AS "orgPic",
+		a.org_pic_id AS "orgPicId",
+		a.cust_tel AS "custTel",
+		a.acct_name AS "acctName",
+		a.bank_name AS "bankName",
+		a.bank_city AS "bankCity",
+		a.bank_branch AS "bankBranch",
+		a.bank_acct AS "bankAcct",
+		a.wx_sub_mch_id AS "wxSubMchId",
+		a.wx_sub_appid AS "wxSubAppid",
+		a.wx_sub_appkey AS "wxSubAppkey",
+		a.cib_rate AS "wxRate",
+		a.CIB_MCH_ID AS "dcMchId",
+		a.cib_appid AS "dcAppid",
+		a.cib_rate AS "dcRate",
+		a.cib_key AS "dcKey",
+		a.status, a.address,
+		a.remarks,
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.card_type_name AS "cardTypeName",
+		a.mch_super_pwd AS "mchSuperPwd",
+		a.reg_code AS "regCode",
+		a.scope,
+		c.category_id as "category.id",
+		c.category_name as "category.name",
+		a.goods,a.goods_tag AS "goodsTag",
+		a.qf_office_id AS "qfOfficeId",
+		a.tg_id AS "tgId",
+		a.mch_type AS "mchType",
+		a.contract_scan AS "contractScan",
+		a.FRANCHISE_PIC AS "franchisePic",
+		a.SCENE_PIC AS "scenePic",
+		a.OTHERE_PIC AS "otherePic",
+		a.parent_mch_id AS "parentMchId",
+		a.parent_mch_ids AS "parentMchIds",
+		a.parent_topmo_id AS "parentTopMoId",
+		a.BANK_ACCT_TYPE as "bankAcctType",
+		a.DEFAULT_FOLLOW as "default_follow",
+		a.MCH_GRADE as "mchGrade",
+		a.dkzh_id as "dkzhId",
+		a.settle_endtime as "settleEndtime",
+		a.settle_type as "settleType",
+		a.agent_id as "agent.id",
+		a.refund_type as "refundType",
+		a.refund_limit as "refundLimit",
+		a.bank_lhh AS "bankLhh",
+		'' AS "bank.parent.name",
+		a.business_license AS "businessLicense",
+		a.business_license_type AS "licenseType",
+		a.contact_type AS "contactType",
+		a.province_code AS "provinceCode",
+		a.city_code AS "cityCode",
+		a.district_code AS "districtCode",
+		a.indirect_level AS "indirectLevel",
+		a.EXTERNAL_ID as "externalId"
+	</sql>
+
+	<sql id="join">
+		cib_mch a
+		LEFT JOIN cib_mch_category c on c.id=a.category
+		LEFT JOIN cib_ali_mch_category c2 on c2.id=a.ali_category
+	</sql>
+
+
+
+	<update id="update">
+		update CIB_MCH SET
+
+		NEW_WX_MCH_ID = #{newWxMchId},
+		NEW_ALI_MCH_ID = #{newAliMchId}
+
+		where ID = #{id}
+	</update>
+
+	<select id="selectListByTopBankId" resultType="com.dcorepay.entities.Mch" parameterType="java.lang.Long">
+		SELECT
+		<include refid="fields" />
+		FROM
+		<include refid="join" />
+		WHERE 1=1 and a.del_flag=0 and a.status = 2
+		AND (a.parent_id =${_parameter} or a.parent_ids like '%,'||${_parameter}||',%' )
+
+	</select>
+
+
+</mapper>
